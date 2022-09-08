@@ -19,7 +19,7 @@ abstract class Reader {
 
     read() {
         (() => {
-            const dataPath = path.resolve(__dirname, '..', this.filePath);
+            const dataPath = path.resolve(__dirname, this.filePath);
             this.data = fs.readFileSync(dataPath, { encoding: 'utf-8' });
          })();
 
@@ -110,7 +110,7 @@ class jsonHotel extends Reader {
     }
 }
 
-const hotelA = new ReaderHotel("csv", "./3/data/hotel.csv")
-const hotelB = new ReaderHotel('json', './3/data/hotel.json')
+const hotelA = new ReaderHotel("csv", "data/hotel.csv")
+const hotelB = new ReaderHotel('json', 'data/hotel.json')
 hotelA.read();
 hotelB.read();
