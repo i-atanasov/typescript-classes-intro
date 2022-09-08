@@ -1,0 +1,7 @@
+
+    {
+        "id": 2,
+        "name": "Rivendale",
+        "rooms": [3,4,2,2,2],
+        "free": false
+    }
