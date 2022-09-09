@@ -9,6 +9,27 @@ interface Hotel {
     free: boolean;
 }
 
+class ReaderHotel {
+    format: "json" | "csv";
+    filePath: string;
+    constructor(format: "json" | "csv", filePath: string) {
+        this.format = format;
+        this.filePath = filePath;
+    }
+
+    read() {
+        let hotel: csvHotel | jsonHotel;
+        
+        if (this.format === "csv") {
+            hotel = new csvHotel(this.filePath);
+        } else {
+            hotel = new jsonHotel(this.filePath);
+        }
+
+        hotel.display();
+    }
+}
+
 abstract class Reader {
     filePath: string;
     data: string = '';
@@ -25,46 +46,10 @@ abstract class Reader {
 
         return this.data;
     }
-
-    load(data: Hotel) {
-        console.log(`Welcome to ${data.name} hotel, we have ${data.rooms.length} rooms.`);
-            if (data.free) {
-                console.log(`There are available rooms!\n`)
-            } else {
-                console.log(`Unfortunately, none are available.\n`)
-            }
-    }
-}
-
-class ReaderHotel {
-    format: "json" | "csv";
-    filePath: string;
-    constructor(format: "json" | "csv", filePath: string) {
-        this.format = format;
-        this.filePath = filePath;
-    }
-
-    read() {
-        let hotel;
-        
-        if (this.format === "csv") {
-            hotel = new csvHotel(this.filePath);
-        } else {
-            hotel = new jsonHotel(this.filePath);
-        }
-
-        hotel.display();
-    }
 }
 
 class csvHotel extends Reader {
-    constructor(
-        filePath: string
-    ){
-        super(filePath);
-    }
-
-    display() {
+      display() {
         const data = super.read();
         const headers = ['id', 'name', 'rooms', 'free'];
 
@@ -92,21 +77,27 @@ class csvHotel extends Reader {
                 if (error) {
                     console.error(error);
                 }
-                super.load(result[0]);
+                new ViewHotel(result[0]);
                 });
     }
 }
 
 class jsonHotel extends Reader {
-    constructor(
-        filePath: string,
-    ){
-        super(filePath);
-    }
 
     display() {
         const result: Hotel = JSON.parse(super.read());
-        super.load(result)
+        new ViewHotel(result);
+    }
+}
+
+class ViewHotel {
+    constructor(data: Hotel) {
+        console.log(`Welcome to ${data.name} hotel, we have ${data.rooms.length} rooms.`);
+        if (data.free) {
+            console.log(`There are available rooms!\n`)
+        } else {
+            console.log(`Unfortunately, none are available.\n`)
+        };
     }
 }
 

@@ -26,28 +26,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const csv_parse_1 = require("csv-parse");
-class Reader {
-    constructor(filePath) {
-        this.data = '';
-        this.filePath = filePath;
-    }
-    read() {
-        (() => {
-            const dataPath = path.resolve(__dirname, this.filePath);
-            this.data = fs.readFileSync(dataPath, { encoding: 'utf-8' });
-        })();
-        return this.data;
-    }
-    load(data) {
-        console.log(`Welcome to ${data.name} hotel, we have ${data.rooms.length} rooms.`);
-        if (data.free) {
-            console.log(`There are available rooms!\n`);
-        }
-        else {
-            console.log(`Unfortunately, none are available.\n`);
-        }
-    }
-}
 class ReaderHotel {
     constructor(format, filePath) {
         this.format = format;
@@ -64,10 +42,20 @@ class ReaderHotel {
         hotel.display();
     }
 }
-class csvHotel extends Reader {
+class Reader {
     constructor(filePath) {
-        super(filePath);
+        this.data = '';
+        this.filePath = filePath;
     }
+    read() {
+        (() => {
+            const dataPath = path.resolve(__dirname, this.filePath);
+            this.data = fs.readFileSync(dataPath, { encoding: 'utf-8' });
+        })();
+        return this.data;
+    }
+}
+class csvHotel extends Reader {
     display() {
         const data = super.read();
         const headers = ['id', 'name', 'rooms', 'free'];
@@ -94,17 +82,26 @@ class csvHotel extends Reader {
             if (error) {
                 console.error(error);
             }
-            super.load(result[0]);
+            new ViewHotel(result[0]);
         });
     }
 }
 class jsonHotel extends Reader {
-    constructor(filePath) {
-        super(filePath);
-    }
     display() {
         const result = JSON.parse(super.read());
-        super.load(result);
+        new ViewHotel(result);
+    }
+}
+class ViewHotel {
+    constructor(data) {
+        console.log(`Welcome to ${data.name} hotel, we have ${data.rooms.length} rooms.`);
+        if (data.free) {
+            console.log(`There are available rooms!\n`);
+        }
+        else {
+            console.log(`Unfortunately, none are available.\n`);
+        }
+        ;
     }
 }
 const hotelA = new ReaderHotel("csv", "data/hotel.csv");
