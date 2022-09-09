@@ -18,12 +18,12 @@ class ReaderHotel {
     }
 
     read() {
-        let hotel: csvHotel | jsonHotel;
+        let hotel: CsvHotel | JsonHotel;
         
         if (this.format === "csv") {
-            hotel = new csvHotel(this.filePath);
+            hotel = new CsvHotel(this.filePath);
         } else {
-            hotel = new jsonHotel(this.filePath);
+            hotel = new JsonHotel(this.filePath);
         }
 
         hotel.display();
@@ -48,7 +48,7 @@ abstract class Reader {
     }
 }
 
-class csvHotel extends Reader {
+class CsvHotel extends Reader {
       display() {
         const data = super.read();
         const headers = ['id', 'name', 'rooms', 'free'];
@@ -82,7 +82,7 @@ class csvHotel extends Reader {
     }
 }
 
-class jsonHotel extends Reader {
+class JsonHotel extends Reader {
 
     display() {
         const result: Hotel = JSON.parse(super.read());
